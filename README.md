@@ -1,4 +1,5 @@
-# OS_JACKFRUIT-PES1UG24CS700-PES1UG24CS709-
+# OS_JACKFRUIT-PES1UG24CS700-PES1UG24CS709
+
 Linux container runtime with namespace isolation, supervisor lifecycle management, IPC-based logging, and kernel module for memory tracking and scheduling experiments
 
 
@@ -8,14 +9,14 @@ Linux container runtime with namespace isolation, supervisor lifecycle managemen
 
 * Name: Yash Raj
 * SRN: PES1UG24CS700
-* NAME:-NAVANEETH T 
+* Name: Navaneeth T
 * SRN: PES1UG24CS709
 
 ---
 
 ## 2. Build, Load, and Run Instructions
 
-### 🔧 Build the Project
+### Build the Project
 
 ```bash
 make
@@ -23,7 +24,7 @@ make
 
 ---
 
-### 🔌 Load Kernel Module
+### Load Kernel Module
 
 ```bash
 sudo insmod monitor.ko
@@ -37,7 +38,7 @@ ls -l /dev/container_monitor
 
 ---
 
-### 🚀 Start Supervisor
+### Start Supervisor
 
 ```bash
 sudo ./engine supervisor ./rootfs-base
@@ -45,7 +46,7 @@ sudo ./engine supervisor ./rootfs-base
 
 ---
 
-### 📁 Create Writable Root Filesystems
+### Create Writable Root Filesystems
 
 ```bash
 cp -a ./rootfs-base ./rootfs-alpha
@@ -54,7 +55,7 @@ cp -a ./rootfs-base ./rootfs-beta
 
 ---
 
-### ▶️ Start Containers
+### Start Containers
 
 ```bash
 sudo ./engine start alpha ./rootfs-alpha /bin/sh --soft-mib 48 --hard-mib 80
@@ -63,7 +64,7 @@ sudo ./engine start beta ./rootfs-beta /bin/sh --soft-mib 64 --hard-mib 96
 
 ---
 
-### 📊 List Containers
+### List Containers
 
 ```bash
 sudo ./engine ps
@@ -71,7 +72,7 @@ sudo ./engine ps
 
 ---
 
-### 📜 View Logs
+### View Logs
 
 ```bash
 sudo ./engine logs alpha
@@ -79,7 +80,7 @@ sudo ./engine logs alpha
 
 ---
 
-### 🧪 Run Workloads
+### Run Workloads
 
 Copy workload into container rootfs:
 
@@ -91,7 +92,7 @@ Then execute inside container.
 
 ---
 
-### ⛔ Stop Containers
+### Stop Containers
 
 ```bash
 sudo ./engine stop alpha
@@ -100,7 +101,7 @@ sudo ./engine stop beta
 
 ---
 
-### 📥 Unload Kernel Module
+### Unload Kernel Module
 
 ```bash
 sudo rmmod monitor
@@ -113,79 +114,79 @@ sudo rmmod monitor
 ### 1. Multi-container supervision
 
 ![Multi Container](screenshots/multi_container.png)
-*Two containers running under a single supervisor.*
+Two containers running under a single supervisor.
 
 ---
 
 ### 2. Metadata tracking
 
 ![PS Output](screenshots/ps_output.png)
-*Output of ps command showing container metadata.*
+Output of ps command showing container metadata.
 
 ---
 
 ### 3. Bounded-buffer logging
 
 ![Logs](screenshots/logs.png)
-*Logs captured through producer-consumer pipeline.*
+Logs captured through producer-consumer pipeline.
 
 ---
 
 ### 4. CLI and IPC
 
 ![CLI IPC](screenshots/ipc_cli.png)
-*CLI interacting with supervisor via IPC.*
+CLI interacting with supervisor via IPC.
 
 ---
 
 ### 5. Soft-limit warning
 
 ![Soft Limit](screenshots/soft_limit.png)
-*Kernel logs showing memory soft-limit warning.*
+Kernel logs showing memory soft-limit warning.
 
 ---
 
 ### 6. Hard-limit enforcement
 
 ![Hard Limit](screenshots/hard_limit.png)
-*Container killed after exceeding memory limit.*
+Container killed after exceeding memory limit.
 
 ---
 
 ### 7. Scheduling experiment
 
 ![Scheduling](screenshots/scheduling.png)
-*Workload behavior under scheduler.*
+Workload behavior under scheduler.
 
 ---
 
 ### 8. Clean teardown
 
 ![Teardown](screenshots/teardown.png)
-*No zombie processes after shutdown.*
+No zombie processes after shutdown.
 
 ---
 
 ## 4. Engineering Analysis
 
-### 🔐 Isolation Mechanisms
+### Isolation Mechanisms
 
 The runtime achieves isolation using Linux namespaces:
 
-* **PID namespace**: isolates process IDs so containers have their own process trees
-* **UTS namespace**: allows separate hostname per container
-* **Mount namespace**: isolates filesystem views
+* PID namespace: isolates process IDs so containers have their own process trees
+* UTS namespace: allows separate hostname per container
+* Mount namespace: isolates filesystem views
 
 `chroot` or `pivot_root` ensures each container has its own root filesystem.
 
 However, all containers still share:
 
-* The same **Linux kernel**
+* The same Linux kernel
 * Kernel resources like scheduler, memory manager
 
 ---
 
-### 🔁 Supervisor and Process Lifecycle
+### Supervisor and Process Lifecycle
 
 A long-running supervisor:
 
@@ -198,11 +199,11 @@ This ensures controlled lifecycle management and centralized monitoring.
 
 ---
 
-### 🔄 IPC, Threads, and Synchronization
+### IPC, Threads, and Synchronization
 
 Two IPC mechanisms used:
 
-* CLI ↔️ Supervisor communication (e.g., pipes or sockets)
+* CLI to Supervisor communication (e.g., pipes or sockets)
 * Logging system (producer-consumer buffer)
 
 Race conditions:
@@ -212,21 +213,21 @@ Race conditions:
 
 Synchronization used:
 
-* **Mutex** → protects shared structures
-* **Condition variables** → coordinate producer-consumer
+* Mutex protects shared structures
+* Condition variables coordinate producer-consumer
 * Prevents data corruption and ensures ordering
 
 ---
 
-### 🧠 Memory Management and Enforcement
+### Memory Management and Enforcement
 
-* **RSS (Resident Set Size)** measures physical memory used
-* Does NOT include swapped-out memory
+* RSS (Resident Set Size) measures physical memory used
+* Does not include swapped-out memory
 
 Soft vs Hard limits:
 
-* **Soft limit** → warning threshold
-* **Hard limit** → enforced kill
+* Soft limit: warning threshold
+* Hard limit: enforced kill
 
 Why kernel enforcement:
 
@@ -235,7 +236,7 @@ Why kernel enforcement:
 
 ---
 
-### ⚙️ Scheduling Behavior
+### Scheduling Behavior
 
 Observed behavior:
 
@@ -245,9 +246,9 @@ Observed behavior:
 
 This reflects Linux scheduling goals:
 
-* **Fairness**
-* **Responsiveness**
-* **Throughput**
+* Fairness
+* Responsiveness
+* Throughput
 
 ---
 
@@ -271,7 +272,7 @@ This reflects Linux scheduling goals:
 
 ### IPC and Logging
 
-* Choice: Bounded buffer with mutex + condition variables
+* Choice: Bounded buffer with mutex and condition variables
 * Tradeoff: Slight overhead
 * Justification: Safe and efficient communication
 
